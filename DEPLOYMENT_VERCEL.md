@@ -63,10 +63,12 @@ Install Command: npm install
 1. اضغط على "Environment Variables"
 2. أضف المتغيرات التالية:
 
-DATABASE_URL=file:./prod.db
+DATABASE_URL=<رابط قاعدة بيانات PostgreSQL - انظر الخطوة 5>
 NEXTAUTH_SECRET=[اضغط Generate لتوليد مفتاح]
 NEXTAUTH_URL=https://your-domain.vercel.app
 ```
+
+⚠️ **مهم جداً:** لا تستخدم SQLite على Vercel! استخدم PostgreSQL (انظر الخطوة 5 أدناه)
 
 #### هـ. النشر:
 ```
@@ -85,9 +87,11 @@ NEXTAUTH_URL=https://your-domain.vercel.app
 5. انتظر حتى يتم التفعيل (5-60 دقيقة)
 ```
 
-### 5. إعداد قاعدة البيانات الإنتاجية
+### 5. إعداد قاعدة البيانات الإنتاجية ⚠️
 
-#### الخيار 1: Vercel Postgres (مدفوع)
+**مهم:** تم تحويل المشروع من SQLite إلى PostgreSQL لأن SQLite لا يعمل على Vercel!
+
+#### الخيار 1: Vercel Postgres (موصى به) ⭐
 ```
 1. في Vercel، اذهب لـ Storage
 2. اختر Postgres
@@ -95,7 +99,7 @@ NEXTAUTH_URL=https://your-domain.vercel.app
 4. سينشئ DATABASE_URL تلقائياً
 ```
 
-#### الخيار 2: Supabase (مجاني)
+#### الخيار 2: Supabase (مجاني 100%) 🆓
 ```
 1. اذهب إلى supabase.com
 2. أنشئ مشروع جديد
@@ -104,13 +108,13 @@ NEXTAUTH_URL=https://your-domain.vercel.app
    DATABASE_URL="postgresql://..."
 ```
 
-#### الخيار 3: PlanetScale (MySQL مجاني)
+#### الخيار 3: Neon (مجاني وسريع) 🚀
 ```
-1. اذهب إلى planetscale.com
-2. أنشئ قاعدة بيانات
-3. احصل على Connection String
-4. غيّر schema.prisma:
-   provider = "mysql"
+1. اذهب إلى neon.tech
+2. اضغط "Get Started"
+3. سجل دخول بـ GitHub
+4. أنشئ Project جديد
+5. انسخ Connection String
 ```
 
 ### 6. تشغيل Migration
