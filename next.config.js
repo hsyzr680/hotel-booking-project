@@ -19,6 +19,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // منع Next.js من محاولة pre-render صفحات API
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  // تجنب أخطاء Build مع API Routes
+  outputFileTracingRoot: undefined,
 }
 
 module.exports = nextConfig
