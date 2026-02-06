@@ -8,6 +8,10 @@ const nextConfig = {
       },
     ],
   },
+  // تحسين البناء على Vercel مع Prisma
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
+  },
   // هذا الجزء الجديد يمنع توقف الموقع بسبب أخطاء البرمجة البسيطة أثناء الرفع
   typescript: {
     ignoreBuildErrors: true,
