@@ -3,24 +3,27 @@ import SearchBar from '@/components/search/SearchBar'
 import HotelCard from '@/components/hotel/HotelCard'
 import { Star, Shield, Award, Sparkles } from 'lucide-react'
 
-async function getFeaturedHotels() {
-  const hotels = await prisma.hotel.findMany({
-    include: {
-      rooms: {
-        orderBy: {
-          pricePerNight: 'asc',
-        },
-        take: 1,
-      },
-      reviews: true,
-    },
-    orderBy: {
-      stars: 'desc',
-    },
-    take: 6,
-  })
+export const dynamic = 'force-dynamic'
 
-  return hotels.map((hotel) => ({
+async function getFeaturedHotels() {
+  try {
+    const hotels = await prisma.hotel.findMany({
+      include: {
+        rooms: {
+          orderBy: {
+            pricePerNight: 'asc',
+          },
+          take: 1,
+        },
+        reviews: true,
+      },
+      orderBy: {
+        stars: 'desc',
+      },
+      take: 6,
+    })
+
+    return hotels.map((hotel) => ({
     ...hotel,
     images: JSON.parse(hotel.images) as string[],
     amenities: JSON.parse(hotel.amenities) as string[],
@@ -31,6 +34,9 @@ async function getFeaturedHotels() {
         ? hotel.reviews.reduce((acc, review) => acc + review.rating, 0) / hotel.reviews.length
         : 0,
   }))
+  } catch {
+    return []
+  }
 }
 
 export default async function Home() {
