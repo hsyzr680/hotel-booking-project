@@ -1,5 +1,3 @@
-// This is your Prisma schema file for PostgreSQL
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,67 +7,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// نموذج المستخدمين
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String     @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  role          String    @default("USER") // "USER" or "ADMIN"
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
+  role          String     @default("USER")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   bookings      Booking[]
-  reviews       Review[]
   favorites     Favorite[]
+  reviews       Review[]
 }
 
-// نموذج الفنادق
 model Hotel {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
-  description String   // نص طويل
+  description String
   address     String
   city        String
   country     String
-  stars       Int      @default(3)
-  images      String   // JSON array of image URLs
-  amenities   String   // JSON array of amenities
+  stars       Int        @default(3)
+  images      String
+  amenities   String
   latitude    Float?
   longitude   Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  rooms       Room[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   bookings    Booking[]
-  reviews     Review[]
   favorites   Favorite[]
+  reviews     Review[]
+  rooms       Room[]
 }
 
-// نموذج الغرف
 model Room {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   hotelId       String
   name          String
-  description   String   // نص طويل
-  type          String   // Single, Double, Suite, etc.
-  capacity      Int      // عدد الأشخاص
+  description   String
+  type          String
+  capacity      Int
   pricePerNight Float
-  images        String   // JSON array of image URLs
-  amenities     String   // JSON array of amenities
-  available     Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  images        String
+  amenities     String
+  available     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   bookings      Booking[]
-  
+  hotel         Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
   @@index([hotelId])
 }
 
-// نموذج الحجوزات
 model Booking {
   id            String   @id @default(cuid())
   userId        String
@@ -79,48 +70,43 @@ model Booking {
   checkOut      DateTime
   guests        Int
   totalPrice    Float
-  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
-  paymentStatus String   @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  status        String   @default("PENDING")
+  paymentStatus String   @default("PENDING")
   paymentId     String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([hotelId])
   @@index([roomId])
 }
 
-// نموذج التقييمات
 model Review {
   id        String   @id @default(cuid())
   userId    String
   hotelId   String
-  rating    Int      // 1-5
-  comment   String   // نص طويل
+  rating    Int
+  comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([hotelId])
 }
 
-// نموذج المفضلة
 model Favorite {
   id        String   @id @default(cuid())
   userId    String
   hotelId   String
   createdAt DateTime @default(now())
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, hotelId])
   @@index([userId])
   @@index([hotelId])
