@@ -15,11 +15,31 @@ export default function ContactPage() {
     message: '',
   })
   const [sent, setSent] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
-    setFormData({ name: '', email: '', subject: '', message: '' })
+    setError('')
+    setIsLoading(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'فشل الإرسال')
+        return
+      }
+      setSent(true)
+      setFormData({ name: '', email: '', subject: '', message: '' })
+    } catch {
+      setError('حدث خطأ في الإرسال')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -96,9 +116,15 @@ export default function ContactPage() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg">
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-2 rounded-lg text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                     <Send className="w-5 h-5 ml-2" />
-                    إرسال الرسالة
+                    {isLoading ? 'جاري الإرسال...' : 'إرسال الرسالة'}
                   </Button>
                 </form>
               )}
@@ -113,7 +139,11 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">البريد الإلكتروني</h3>
-                  <p className="text-gray-600">support@hotelbooking.com</p>
+                  <p className="text-gray-600">
+                  <a href="mailto:hsyzr690@gmail.com" className="text-blue-600 hover:underline">
+                    hsyzr690@gmail.com
+                  </a>
+                </p>
                 </div>
               </CardContent>
             </Card>
