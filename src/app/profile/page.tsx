@@ -6,6 +6,7 @@ import { User, Mail, Calendar, Star, Hotel } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/Card'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
+import CancelBookingButton from '@/components/booking/CancelBookingButton'
 
 async function getUserData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -112,28 +113,33 @@ export default async function ProfilePage() {
               <CardContent className="p-6 pt-0">
                 {userData.bookings.length > 0 ? (
                   <div className="space-y-4">
-                    {userData.bookings.slice(0, 3).map((booking) => (
-                      <div key={booking.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                        <Hotel className="w-5 h-5 text-blue-600 mt-1" />
-                        <div className="flex-1">
+                    {userData.bookings.map((booking) => (
+                      <div key={booking.id} className="flex flex-col sm:flex-row sm:items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                        <Hotel className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900 mb-1">{booking.hotel.name}</h4>
                           <p className="text-sm text-gray-600 mb-2">{booking.room.name}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                             <span>
                               {new Date(booking.checkIn).toLocaleDateString('ar-SA')} - {new Date(booking.checkOut).toLocaleDateString('ar-SA')}
                             </span>
                             <span className={`px-2 py-1 rounded text-xs ${
                               booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
                               booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                              booking.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' :
                               'bg-red-100 text-red-800'
                             }`}>
                               {booking.status === 'CONFIRMED' ? 'مؤكد' :
-                               booking.status === 'PENDING' ? 'معلق' : 'ملغي'}
+                               booking.status === 'PENDING' ? 'معلق' :
+                               booking.status === 'COMPLETED' ? 'مكتمل' : 'ملغي'}
                             </span>
                           </div>
                         </div>
-                        <div className="text-left">
-                          <p className="text-lg font-bold text-gray-900">{booking.totalPrice.toLocaleString('ar-SA')} ريال</p>
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="text-left">
+                            <p className="text-lg font-bold text-gray-900">{booking.totalPrice.toLocaleString('ar-SA')} ريال</p>
+                          </div>
+                          <CancelBookingButton bookingId={booking.id} status={booking.status} />
                         </div>
                       </div>
                     ))}
