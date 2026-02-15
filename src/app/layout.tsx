@@ -8,9 +8,26 @@ import SessionProvider from '@/components/providers/SessionProvider'
 const cairo = Cairo({ subsets: ['arabic', 'latin'] })
 
 export const metadata: Metadata = {
-  title: 'حجز فنادق - أفضل الأسعار والعروض',
-  description: 'نظام حجز فنادق احترافي وسهل الاستخدام. احجز فندقك المثالي بأفضل الأسعار في الوطن العربي والعالم.',
-  keywords: 'حجز فنادق, فنادق, حجوزات, سياحة, سفر',
+  title: 'فندق القدوة - للحجوزات الفندقية الاحترافية',
+  description: 'أفضل منصة لحجز الفنادق والغرف أونلاين في العراق.',
+  keywords: 'فندق، حجز فنادق، فندق القدوة، العراق، فنادق بغداد',
+  openGraph: {
+    title: 'فندق القدوة - للحجوزات الفندقية الاحترافية',
+    description: 'أفضل منصة لحجز الفنادق والغرف أونلاين في العراق.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

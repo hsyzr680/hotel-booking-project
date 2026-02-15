@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma'
 import { MapPin, Star, Wifi, Car, Coffee, Dumbbell } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import StarRating from '@/components/hotel/StarRating'
+import ReviewForm from '@/components/hotel/ReviewForm'
 
 interface HotelPageProps {
   params: {
@@ -120,20 +122,18 @@ export default async function HotelPage({ params }: HotelPageProps) {
                     </div>
                   </div>
 
-                  {/* Rating */}
-                  {hotel.reviews.length > 0 && (
-                    <div className="flex items-center gap-3 mb-6 pb-6 border-b">
-                      <div className="bg-blue-600 text-white px-4 py-2 rounded-lg text-xl font-bold">
-                        {hotel.averageRating.toFixed(1)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">ممتاز</p>
-                        <p className="text-sm text-gray-600">
-                          {hotel.reviews.length} تقييم
-                        </p>
-                      </div>
+                  {/* Rating - متوسط التقييمات بالنجوم الصفراء */}
+                  <div className="flex items-center gap-4 mb-6 pb-6 border-b">
+                    <StarRating rating={hotel.averageRating} size="lg" showValue />
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {hotel.reviews.length > 0 ? 'ممتاز' : 'لا توجد تقييمات بعد'}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {hotel.reviews.length} تقييم
+                      </p>
                     </div>
-                  )}
+                  </div>
 
                   {/* Description */}
                   <div className="mb-6 pb-6 border-b">
@@ -208,10 +208,14 @@ export default async function HotelPage({ params }: HotelPageProps) {
                 </div>
               </div>
 
-              {/* Reviews */}
-              {hotel.reviews.length > 0 && (
-                <div className="mt-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">التقييمات</h2>
+              {/* نموذج إضافة تقييم (للمستخدم المسجل) */}
+              <div className="mt-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">التقييمات</h2>
+                <div className="mb-6">
+                  <ReviewForm hotelId={hotel.id} />
+                </div>
+                {/* قائمة التقييمات - نجوم صفراء */}
+                {hotel.reviews.length > 0 && (
                   <div className="space-y-4">
                     {hotel.reviews.map((review) => (
                       <Card key={review.id}>
@@ -225,10 +229,7 @@ export default async function HotelPage({ params }: HotelPageProps) {
                                 <h4 className="font-semibold text-gray-900">
                                   {review.user.name || 'مستخدم'}
                                 </h4>
-                                <div className="flex items-center gap-1 bg-blue-600 text-white px-2 py-1 rounded-lg text-sm">
-                                  <Star className="w-3 h-3 fill-current" />
-                                  <span>{review.rating}</span>
-                                </div>
+                                <StarRating rating={review.rating} size="sm" />
                               </div>
                               <p className="text-gray-700">{review.comment}</p>
                               <p className="text-sm text-gray-500 mt-2">
@@ -240,8 +241,8 @@ export default async function HotelPage({ params }: HotelPageProps) {
                       </Card>
                     ))}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Sidebar - Booking Card */}
